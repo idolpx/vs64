@@ -1160,59 +1160,24 @@ class Project {
         } else if (toolkit.isBasic) {
 
             script.push(Ninja.keyValue("asm_exe", (project.assembler || settings.basicExecutable)));
-            script.push(Ninja.keyValue("asminfo", path.resolve(project.builddir, project.name + ".info")));
-            script.push("");
-
-            const flags = new NinjaArgs(
-                "-debugdump",
-                "-asminfo",
-                "\"files|errors\""
-            );
-
-            if (!releaseBuild) {
-                defines.add("DEBUG");
-                flags.add("-debug");
-            }
-
-            flags.add(
-                this._args,
-                this._assemblerFlags
-            );
-
-            script.push(Ninja.keyArgs("flags", flags));
-            script.push(Ninja.keyValueRaw("includes", includes.join("-libdir ")));
-            script.push(Ninja.keyValueRaw("defs", defines.join("-define ")));
-
-            script.push("");
-
-            script.push("rule res");
-            script.push("    command = $python_exe $rc_exe $rc_flags -o $out $in");
             script.push("");
 
             script.push("rule asm");
-            script.push("    depfile = $out.d");
-            script.push("    deps = gcc");
-            script.push("    command = $java_exe -jar $asm_exe -odir \"$builddir\" -asminfofile \"$asminfo\" $flags $includes -o $out $in");
-            script.push("");
-
-            buildTree.gen.forEach((to, from) => {
-                script.push(Ninja.build(to, from, "res"));
-            });
+            script.push("    command = $asm_exe -o \"$builddir/$out\" $out $in");
             script.push("");
 
             const pgmDeps = buildTree.deps.getAsArray(project.outfile);
-            const asmMain = pgmDeps[0]||"main.asm";
+            const basMain = pgmDeps[0]||"main.bas";
             const pgmRefs = pgmDeps.slice(1);
 
-            let asmBuild = "build $target | $dbg_out : asm " + Ninja.escape(asmMain);
+            let basBuild = "build $target | $dbg_out : asm " + Ninja.escape(basMain);
 
             if (!buildTree.deps.empty()) {
-                asmBuild += " | " + Ninja.join(pgmRefs);
+                basBuild += " | " + Ninja.join(pgmRefs);
             }
 
-            script.push(asmBuild);
+            script.push(basBuild);
             script.push("");
-
         }
 
         script.push("build all: phony $target");

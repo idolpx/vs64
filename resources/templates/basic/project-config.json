@@ -1,0 +1,11 @@
+{
+    "name": "example",
+    "description": "Example project",
+    "toolkit": "basic",
+    "main": "src/main.bas",
+    "build": "debug",
+    "definitions": [],
+    "includes": [],
+    "args": [],
+    "compiler": ""
+}

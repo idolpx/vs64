@@ -53,7 +53,7 @@
 		"c64",
 		"commodore",
 		"assembler",
-		"acme", "kickassembler", "llvm",
+		"acme", "kickassembler", "llvm", "basic"
 		"c++", "cc65",
 		"6502", "6510",
 		"vice",
@@ -264,6 +264,12 @@
 				"configuration": "./language/asm.language.json"
 			},
 			{
+				"id": "bas",
+				"aliases": [ "Basic v2" ],
+				"extensions": [ ".bas" ],
+				"configuration": "./language/basic.language.json"
+			},
+			{
 				"id": "res",
 				"aliases": [ "resource"	],
 				"extensions": [ ".res" ]
@@ -274,6 +280,11 @@
 				"language": "asm",
 				"scopeName": "source.asm",
 				"path": "./language/asm.grammar.json"
+			},
+			{
+				"language": "bas",
+				"scopeName": "source.bas",
+				"path": "./language/bas.grammar.json"
 			}
 		],
 		"snippets": [
