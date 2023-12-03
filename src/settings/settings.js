@@ -27,7 +27,7 @@ const logger = new Logger("Settings");
 const Constants = {
     BinaryMonitorPort: 6502,
     ProjectConfigFile: "project-config.json",
-    SupportedLanguageIds: [ "asm", "s", "c", "cpp", "h", "hpp", "cc", "hh", "res", "raw", "spm", "properties" ],
+    SupportedLanguageIds: [ "asm", "s", "c", "cpp", "h", "hpp", "cc", "hh", "res", "raw", "spm", "properties", "bas" ],
     AssemblerLanguageId: "asm",
     DebuggerType6502: "6502",
     DebuggerTypeVice: "vice",
@@ -144,6 +144,7 @@ class Settings {
         this.setupKickAssembler(workspaceConfig);
         this.setupCC65(workspaceConfig);
         this.setupLLVM(workspaceConfig);
+        this.setupBasic(workspaceConfig);
         this.setupVice(workspaceConfig);
 
         this.show();
@@ -319,6 +320,7 @@ class Settings {
         logger.debug("cc65 executable: " + settings.cc65Executable);
         logger.debug("ca65 executable: " + settings.ca65Executable);
         logger.debug("ld65 executable: " + settings.ld65Executable);
+        logger.debug("basic executable: " + settings.basicExecutable);
         logger.debug("vice executable: " + settings.emulatorExecutable);
         logger.debug("ninja executable: " + settings.ninjaExecutable);
         logger.debug("python executable: " + settings.pythonExecutable);
