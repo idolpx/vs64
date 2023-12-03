@@ -132,12 +132,14 @@ class AsmParser extends ParserBase {
 
         let isKickAss = false;
         let isAcme = false;
-        let isLLVM = false
+        let isLLVM = false;
+        let isBasic = false;
 
         if (options && options.toolkit) {
             isKickAss = options.toolkit.isKick;
             isAcme = options.toolkit.isAcme;
             isLLVM = options.toolkit.isLLVM;
+            isBasic = options.toolit.isBasic;
         }
 
         let tokensPerLineOfs = -1;

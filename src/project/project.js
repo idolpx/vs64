@@ -178,11 +178,11 @@ class Project {
         if (!data.name) { throw("property 'name' is missing."); }
         this._name = data.name;
 
-        if (!data.toolkit) { throw("property 'toolkit' needs to be defined (either 'acme', 'kick', 'cc65' or 'llvm')"); }
+        if (!data.toolkit) { throw("property 'toolkit' needs to be defined (either 'acme', 'kick', 'cc65', 'llvm', or 'basic')"); }
         const toolkitId = data.toolkit.toLowerCase();
 
-        if (["acme", "kick", "cc65", "llvm"].indexOf(toolkitId) < 0) {
-            throw("property 'toolkit' needs to be either 'acme', 'kick', 'cc65' or 'llvm'");
+        if (["acme", "kick", "cc65", "llvm", "basic"].indexOf(toolkitId) < 0) {
+            throw("property 'toolkit' needs to be either 'acme', 'kick', 'cc65', 'llvm', or 'basic");
         }
 
         this._toolkit = Toolkit.fromName(toolkitId);
@@ -1155,6 +1155,62 @@ class Project {
             script.push("");
 
             script.push("build $target | $dbg_out : link " + Ninja.join(buildTree.obj.array()));
+            script.push("");
+
+        } else if (toolkit.isBasic) {
+
+            script.push(Ninja.keyValue("asm_exe", (project.assembler || settings.basicExecutable)));
+            script.push(Ninja.keyValue("asminfo", path.resolve(project.builddir, project.name + ".info")));
+            script.push("");
+
+            const flags = new NinjaArgs(
+                "-debugdump",
+                "-asminfo",
+                "\"files|errors\""
+            );
+
+            if (!releaseBuild) {
+                defines.add("DEBUG");
+                flags.add("-debug");
+            }
+
+            flags.add(
+                this._args,
+                this._assemblerFlags
+            );
+
+            script.push(Ninja.keyArgs("flags", flags));
+            script.push(Ninja.keyValueRaw("includes", includes.join("-libdir ")));
+            script.push(Ninja.keyValueRaw("defs", defines.join("-define ")));
+
+            script.push("");
+
+            script.push("rule res");
+            script.push("    command = $python_exe $rc_exe $rc_flags -o $out $in");
+            script.push("");
+
+            script.push("rule asm");
+            script.push("    depfile = $out.d");
+            script.push("    deps = gcc");
+            script.push("    command = $java_exe -jar $asm_exe -odir \"$builddir\" -asminfofile \"$asminfo\" $flags $includes -o $out $in");
+            script.push("");
+
+            buildTree.gen.forEach((to, from) => {
+                script.push(Ninja.build(to, from, "res"));
+            });
+            script.push("");
+
+            const pgmDeps = buildTree.deps.getAsArray(project.outfile);
+            const asmMain = pgmDeps[0]||"main.asm";
+            const pgmRefs = pgmDeps.slice(1);
+
+            let asmBuild = "build $target | $dbg_out : asm " + Ninja.escape(asmMain);
+
+            if (!buildTree.deps.empty()) {
+                asmBuild += " | " + Ninja.join(pgmRefs);
+            }
+
+            script.push(asmBuild);
             script.push("");
 
         }

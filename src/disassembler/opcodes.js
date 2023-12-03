@@ -9,7 +9,7 @@
 const AddressMode = {
     imm: 0,  // Immediate - imm
     abs: 1,  // Absolute - abs
-    zp: 2,   // Zero Page - zp
+    zp:  2,  // Zero Page - zp
     imp: 3,  // Implied
     ind: 4,  // Indirect Absolute - ind
     abx: 5,  // Absolute indexed with X - abx / abs.x

@@ -213,6 +213,9 @@ class Extension {
             subscriptions.push(vscode.commands.registerCommand("vs64.createProjectLlvm", function() {
                 thisInstance.onCommandCreateProject("llvm");
             }));
+            subscriptions.push(vscode.commands.registerCommand("vs64.createProjectBasic", function() {
+                thisInstance.onCommandCreateProject("basic");
+            }));
             subscriptions.push(vscode.commands.registerCommand("vs64.buildProject", function() {
                 thisInstance.triggerBuild();
             }));
@@ -354,7 +357,7 @@ class Extension {
 
         const destFolder = workspaceRoot;
 
-        const sourceExtensions = ";.cpp;.cc;.c;.s;.asm;.res;.raw;.spm;.spd;.ctm;.sid;.wav;";
+        const sourceExtensions = ";.cpp;.cc;.c;.s;.asm;.res;.raw;.spm;.spd;.ctm;.sid;.wav;.bas;";
         const includeExtensions = ";.hpp;.hh;.h;.inc;";
 
         let sourceFilesExist = false;

@@ -246,6 +246,15 @@ class Settings {
         }
     }
 
+    setupBasic(workspaceConfig) {
+        const installDir = this.#getAbsDir(workspaceConfig.get("vs64.basicInstallDir"));
+        if (installDir) {
+            this.basicExecutable = path.resolve(installDir, Utils.normalizeExecutableName("petcat"));
+        } else {
+            this.basicExecutable = "petcat";
+        }
+    }
+
     setupVice(workspaceConfig) {
         const executablePath = this.#getAbsDir(workspaceConfig.get("vs64.emulatorExecutable"));
         if (executablePath) {
